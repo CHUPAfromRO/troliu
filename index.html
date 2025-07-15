@@ -200,26 +200,26 @@
       }
     }
 
-    function getElevationFromCoordinates(coordonateText) {
-      const coordRegex = /(-?\d+(\.\d+)?)[^\d-]*(-?\d+(\.\d+)?)/;
-      const match = coordonateText.match(coordRegex);
-      if (!match) return;
+  function getElevationFromCoordinates(coordonateText) {
+  const coordRegex = /(-?\d+(\.\d+)?)[^\d-]*(-?\d+(\.\d+)?)/;
+  const match = coordonateText.match(coordRegex);
+  if (!match) return;
 
-      const lat = parseFloat(match[1]);
-      const lon = parseFloat(match[3]);
+  const lat = parseFloat(match[1]);
+  const lon = parseFloat(match[3]);
 
-      fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${lat},${lon}`)
-        .then(response => response.json())
-        .then(data => {
-          const elevationMeters = data.results[0].elevation;
-          const elevationFeet = Math.round(elevationMeters * 3.28084);
-          document.getElementById("cota").value = elevationFeet;
-          editare(); // recalculează toate valorile cu noua cotă
-        })
-        .catch(err => {
-          console.error("Eroare obținere elevație:", err);
-        });
-    }
+  fetch(`https://api.opentopodata.org/v1/test-dataset?locations=${lat},${lon}`)
+    .then(response => response.json())
+    .then(data => {
+      const elevationMeters = data.results[0].elevation;
+      const elevationFeet = Math.round(elevationMeters * 3.28084);
+      document.getElementById("cota").value = elevationFeet;
+      editare(); // recalculează toate valorile cu noua cotă
+    })
+    .catch(err => {
+      console.error("Eroare obținere elevație:", err);
+    });
+}
 
     // Preîncărcare la deschiderea paginii
  window.onload = function () {
