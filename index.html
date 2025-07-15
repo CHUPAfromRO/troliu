@@ -222,20 +222,29 @@
     }
 
     // Preîncărcare la deschiderea paginii
-    window.onload = function () {
-      document.getElementById("coordonate").value = localStorage.getItem("coordonate") || "";
-      document.getElementById("obs").value = localStorage.getItem("obs") || "";
-      document.getElementById("cota").value = localStorage.getItem("cota") || "";
-      document.getElementById("qnh").value = localStorage.getItem("qnh") || "";
-      document.getElementById("vant").value = localStorage.getItem("vant") || "";
-      document.getElementById("temperatura").value = localStorage.getItem("temperatura") || "";
-      document.getElementById("HOGEMCP").value = localStorage.getItem("HOGEMCP") || "";
-      document.getElementById("1").value = localStorage.getItem("unu") || "";
-      document.getElementById("2").value = localStorage.getItem("doi") || "";
-      document.getElementById("3").value = localStorage.getItem("trei") || "";
-      document.getElementById("4").value = localStorage.getItem("patru") || "";
+ window.onload = function () {
+  const coordField = document.getElementById("coordonate");
+  coordField.value = localStorage.getItem("coordonate") || "";
+  document.getElementById("obs").value = localStorage.getItem("obs") || "";
+  document.getElementById("cota").value = localStorage.getItem("cota") || "";
+  document.getElementById("qnh").value = localStorage.getItem("qnh") || "";
+  document.getElementById("vant").value = localStorage.getItem("vant") || "";
+  document.getElementById("temperatura").value = localStorage.getItem("temperatura") || "";
+  document.getElementById("HOGEMCP").value = localStorage.getItem("HOGEMCP") || "";
+  document.getElementById("1").value = localStorage.getItem("unu") || "";
+  document.getElementById("2").value = localStorage.getItem("doi") || "";
+  document.getElementById("3").value = localStorage.getItem("trei") || "";
+  document.getElementById("4").value = localStorage.getItem("patru") || "";
 
-      editare();
+  // Simulează evenimentul "input" pe câmpul coordonate pentru a declanșa preluarea cotei
+  if (coordField.value.includes(",")) {
+    getElevationFromCoordinates(coordField.value);
+  }
+
+  // Apelează editare doar după ce toate valorile au fost setate
+  editare();
+};
+
     }
   </script>
 </body>
