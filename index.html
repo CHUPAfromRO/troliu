@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<head>
+  <link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#ffffff" />
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>Checklist Troliere</title>
+
+  <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    body {
+      margin: 0.5cm;
+    }
+    h2,
+    h4 {
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+    }
+    input.coordonate {
+      width: 200px;
+      text-align: left;
+    }
+    input {
+      width: 50px;
+      text-align: center;
+    }
+    .bold {
+      font-weight: bold;
+    }
+    #mmt,
+    #md,
+    #mt {
+      max-width: 170px;
+      margin-left: 15px;
+    }
+    span {
+      font-size: 10px;
+    }
+    td {
+      min-width: 95px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Checklist misiune troliu</h2>
+  <h4><i> - Helionix - </i></h4>
+  <hr />
+  <table>
+    <tr>
+      <td>Coordonate locație:</td>
+      <td>
+        <input
+          type="text"
+          id="coordonate"
+          class="coordonate"
+          oninput="editare()"
+        />
+      </td>
+    </tr>
+  </table>
+  <label for="obs">Observații:</label>
+  <textarea name="obs" id="obs" oninput="editare()"></textarea>
+  <hr />
+  <table>
+    <tr>
+      <td>Cota:</td>
+      <td><input type="number" id="cota" oninput="editare()" /> feet</td>
+
+<td rowspan="2">
+        <div id="mmt" class="bl">
+          <b>Masa maximă admisă la troliere (HOGE TOP):</b>
+        </div>
+      </td>
+<td rowspan="2">
+        <input type="number" name="" id="HOGETOP" oninput="editare()" /> kg
+      </td>
+      <td rowspan="2"><span><i>(FLM 5-53)</i></span></td>
+
+    </tr>
+    <tr>
+      <td>QNH:</td>
+      <td>
+        <input
+          type="number"
+          minlength="3"
+          maxlength="4"
+          id="qnh"
+          oninput="editare()"
+        />
+        hPa
+      </td>
+    </tr>
+    <tr>
+      <td>Vânt:</td>
+      <td><input type="number" id="vant" oninput="editare()" /> kts</td>
+      <td id="atentieVant"></td>
+    </tr>
+    <tr>
+      <td class="bold">Temperatura:</td>
+      <td class="bold">
+        <input type="number" id="temperatura" oninput="editare()" /> °C
+      </td>
+      <td rowspan="2">
+        <div id="mmt" class="bl">
+          <b>Masa maximă admisă la troliere (HOGE MCP):</b>
+        </div>
+      </td>
+      <td rowspan="2">
+        <input type="number" name="" id="HOGEMCP" oninput="editare()" /> kg
+      </td>
+      <td rowspan="2"><span><i>(FLM 5-58)</i></span></td>
+    </tr>
+    <tr>
+      <td><b>Pressure alt:</b></td>
+      <td class="bold"><input type="number" id="pAlt" /> feet</td>
+    </tr>
+  </table>
+  <hr />
+  <table>
+    <tr>
+      <td><i>(1)</i> ZFM (hoist) + ST:</td>
+      <td><input type="number" id="1" oninput="editare()" /> kg</td>
+      <td rowspan="2" class="bl">
+        <div id="md">
+          <b><i>(5)</i> Masa la decolare:</b>
+        </div>
+      </td>
+      <td rowspan="2"><input type="number" id="5" oninput="editare()" /> kg</td>
+      <td rowspan="2"><span>(1+2+3+4)</span></td>
+    </tr>
+    <tr>
+      <td><i>(2)</i> Combustibil POA - pacient:</td>
+      <td><input type="number" id="2" oninput="editare()" /> kg</td>
+    </tr>
+    <tr>
+      <td><i>(3)</i> Combustibil pacient - realimentare:</td>
+      <td><input type="number" id="3" oninput="editare()" /> kg</td>
+      <td rowspan="2" class="bl">
+        <div id="mt">
+          <b>Combustibil MT:</b>
+        </div>
+      </td>
+      <td rowspan="2">
+        <input type="number" id="combustibilMT" oninput="editare()" /> kg
+      </td>
+    </tr>
+    <tr>
+      <td><i>(4)</i> Combustibil căutare + troliere:</td>
+      <td><input type="number" id="4" oninput="editare()" /> kg</td>
+    </tr>
+    <tr>
+      <td><br /></td>
+    </tr>
+    <tr>
+      <td><b>Masa la troliere (fără pacient):</b></td>
+      <td>
+        <input type="number" name="" id="masaTroliere" oninput="editare()" /> kg
+      </td>
+      <td>
+        <span><i> (5-2) </i> </span>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <h3>Limitări troliu:</h3>
+  <img
+    width="400px"
+    src="file:///E:/Sincronizat cu Google Drive/Personale/Vintila/Wind limitations (nu il muta de aici).png"
+    alt=" Imagine Limitări vânt"
+  />
+  <ul>
+    <li>Bank angle < 30°</li>
+    <li id="limMasa"></li>
+  </ul>
+  <!-- https://drive.google.com/uc?export=view&id= -->
+  <script>
+    const coordonate = (document.getElementById("coordonate").value =
+      localStorage.getItem("coordonate"));
+    const obs = (document.getElementById("obs").value =
+      localStorage.getItem("obs"));
+    const cota = (document.getElementById("cota").value =
+      localStorage.getItem("cota"));
+    const qnh = (document.getElementById("qnh").value =
+      localStorage.getItem("qnh"));
+    const vant = (document.getElementById("vant").value =
+      localStorage.getItem("vant"));
+    const temperatura = (document.getElementById("temperatura").value =
+      localStorage.getItem("temperatura"));
+    const HOGEMCP = (document.getElementById("HOGEMCP").value =
+      localStorage.getItem("HOGEMCP"));
+    const unu = (document.getElementById("1").value =
+      localStorage.getItem("unu"));
+    const doi = (document.getElementById("2").value =
+      localStorage.getItem("doi"));
+    const trei = (document.getElementById("3").value =
+      localStorage.getItem("trei"));
+    const patru = (document.getElementById("4").value =
+      localStorage.getItem("patru"));
+
+    //Calculează la încărcarea paginii
+    var qnhDev = 1013 - +qnh;
+    var presDev = qnhDev * 27;
+    var PA = +cota + presDev;
+    PA >= 0
+      ? (document.getElementById("pAlt").value = PA)
+      : (document.getElementById("pAlt").value = 0);
+
+    temperatura > 0
+      ? (document.getElementById("limMasa").innerHTML =
+          "Masa maximă admisă pentru ridicare cu troliu este de 249 kg")
+      : (document.getElementById("limMasa").innerHTML =
+          "Masa maximă admisă pentru ridicare cu troliu este de 227 kg");
+
+    if (temperatura == "") {
+      document.getElementById("limMasa").innerHTML =
+        "Sarcina maximă pentru troliere este: <b>249 kg</b> <i>(temp. > 0)</i> / <b>227 kg</b> <i>(temp. <=0)</i>";
+    }
+    if (vant > 17) {
+      document.getElementById("vant").style.backgroundColor = "yellow";
+      document.getElementById("atentieVant").innerHTML =
+        "Atenție la limitarea de vânt!";
+      document.getElementById("atentieVant").style.backgroundColor = "yellow";
+    } else {
+      document.getElementById("vant").style.backgroundColor = "white";
+    }
+
+    //Combustibil MT
+    document.getElementById("combustibilMT").value = +doi + +trei + +patru;
+      if (+doi + +trei + +patru > 478) {
+        document.getElementById("combustibilMT").style.backgroundColor = "red";
+        document.getElementById("combustibilMT").style.color = "white";
+      } else {
+        document.getElementById("combustibilMT").style.backgroundColor =
+          "white";
+          document.getElementById("combustibilMT").style.color = "black";
+      }
+
+    //Masa la decolare
+
+    document.getElementById("5").value = +unu + +doi + +trei + +patru;
+    document.getElementById("masaTroliere").value =
+      document.getElementById("5").value - doi;
+    if (document.getElementById("5").value > 2980) {
+      document.getElementById("5").style.backgroundColor = "red";
+      document.getElementById("5").style.color = "white";
+    } else {
+      document.getElementById("5").style.backgroundColor = "white";
+      document.getElementById("5").style.color = "black";
+    }
+
+    //Execută la fiecare editare
+    function editare() {
+      //Declarare variabile
+      const coordonate = document.getElementById("coordonate").value;
+      localStorage.setItem("coordonate", coordonate);
+      const obs = document.getElementById("obs").value;
+      localStorage.setItem("obs", obs);
+      const cota = document.getElementById("cota").value;
+      localStorage.setItem("cota", cota);
+      const qnh = document.getElementById("qnh").value;
+      localStorage.setItem("qnh", qnh);
+      const vant = document.getElementById("vant").value;
+      localStorage.setItem("vant", vant);
+      const temperatura = document.getElementById("temperatura").value;
+      localStorage.setItem("temperatura", temperatura);
+      const HOGEMCP = document.getElementById("HOGEMCP").value;
+      localStorage.setItem("HOGEMCP", HOGEMCP);
+      const unu = document.getElementById("1").value;
+      localStorage.setItem("unu", unu);
+      const doi = document.getElementById("2").value;
+      localStorage.setItem("doi", doi);
+      const trei = document.getElementById("3").value;
+      localStorage.setItem("trei", trei);
+      const patru = document.getElementById("4").value;
+      localStorage.setItem("patru", patru);
+
+      //Calcule
+      //Vânt
+      temperatura > 0
+        ? (document.getElementById("limMasa").innerHTML =
+            "Masa maximă admisă pentru ridicare cu troliu este de 249 kg")
+        : (document.getElementById("limMasa").innerHTML =
+            "Masa maximă admisă pentru ridicare cu troliu este de 227 kg");
+
+      if (temperatura == "") {
+        document.getElementById("limMasa").innerHTML =
+          "Sarcina maximă pentru troliere este: <b>249 kg</b> <i>(temp. > 0)</i> / <b>227 kg</b> <i>(temp. <=0)</i>";
+      }
+      if (vant > 17) {
+        document.getElementById("vant").style.backgroundColor = "yellow";
+        document.getElementById("atentieVant").innerHTML =
+          "Atenție la limitarea de vânt!";
+        document.getElementById("atentieVant").style.backgroundColor = "yellow";
+      } else {
+        document.getElementById("vant").style.backgroundColor = "white";
+        document.getElementById("atentieVant").style.backgroundColor = "white";
+        document.getElementById("atentieVant").innerHTML = "";
+      }
+      //Pressure Altitude
+      var qnhDev = 1013 - +qnh;
+      var presDev = qnhDev * 27;
+      var PA = +cota + presDev;
+      PA >= 0
+        ? (document.getElementById("pAlt").value = PA)
+        : (document.getElementById("pAlt").value = 0);
+      //Masa la decolare
+      document.getElementById("5").value = +unu + +doi + +trei + +patru;
+      document.getElementById("masaTroliere").value =
+        document.getElementById("5").value - doi;
+      if (document.getElementById("5").value > 2980) {
+        document.getElementById("5").style.backgroundColor = "red";
+        document.getElementById("5").style.color = "white";
+      } else {
+        document.getElementById("5").style.backgroundColor = "white";
+        document.getElementById("5").style.color = "black";
+      }
+      //Combustibil MT
+      document.getElementById("combustibilMT").value = +doi + +trei + +patru;
+      if (+doi + +trei + +patru > 478) {
+        document.getElementById("combustibilMT").style.backgroundColor = "red";
+        document.getElementById("combustibilMT").style.color = "white";
+      } else {
+        document.getElementById("combustibilMT").style.backgroundColor =
+          "white";
+          document.getElementById("combustibilMT").style.color = "black";
+      }
+    }
+  </script>
+</body>
+
