@@ -260,6 +260,10 @@
       //Declarare variabile
       const coordonate = document.getElementById("coordonate").value;
       localStorage.setItem("coordonate", coordonate);
+      const coordonate = document.getElementById("coordonate").value;
+
+if (coordonate && coordonate.includes(",")) {
+  getElevationFromCoordinates(coordonate);
       const obs = document.getElementById("obs").value;
       localStorage.setItem("obs", obs);
       const cota = document.getElementById("cota").value;
@@ -332,6 +336,26 @@
           document.getElementById("combustibilMT").style.color = "black";
       }
     }
+      function getElevationFromCoordinates(coordonateText) {
+  const coordRegex = /(-?\d+(\.\d+)?)[^\d-]*(-?\d+(\.\d+)?)/;
+  const match = coordonateText.match(coordRegex);
+  if (!match) return;
+
+  const lat = parseFloat(match[1]);
+  const lon = parseFloat(match[3]);
+
+  fetch(`https://api.open-elevation.com/api/v1/lookup?locations=${lat},${lon}`)
+    .then(response => response.json())
+    .then(data => {
+      const elevationMeters = data.results[0].elevation;
+      const elevationFeet = Math.round(elevationMeters * 3.28084);
+      document.getElementById("cota").value = elevationFeet;
+      editare(); // recalculează toate valorile cu noua cotă
+    })
+    .catch(err => {
+      console.error("Eroare obținere elevație:", err);
+    });
+}
   </script>
 </body>
 
